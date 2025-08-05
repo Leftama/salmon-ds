@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yemayá Ashabbá - Salmón Premium de Puerto Montt</title>
+    <title>Salmoprime - Salmón Premium de Puerto Montt</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/style-main.css">
 </head>
 <body>
     <!-- Header -->
     <header>
         <nav class="navbar">
             <div class="logo">
-                <div class="logo-circle">SP</div>
-                <h1>Salmoprime</h1>
+                <div class="logo logo-bg"></div>
             </div>
             <ul class="nav-links">
                 <li><a href="#inicio">Inicio</a></li>
@@ -22,7 +21,13 @@
                 <li><a href="#beneficios">Beneficios</a></li>
                 <li><a href="#contacto">Contacto</a></li>
             </ul>
-            <a href="#productos" class="btn">Comprar Ahora</a>
+            <div class="header-actions">
+                <a href="#productos" class="btn">Comprar Ahora</a>
+                <button class="cart-icon" onclick="toggleCart()">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+            </div>
         </nav>
     </header>
 
@@ -41,7 +46,7 @@
     <!-- Features Section -->
     <section class="features" id="beneficios">
         <h2 class="section-title">Nuestra Esencia</h2>
-        <p class="section-subtitle">El salmón Yemayá Ashabbá es más que un producto, es una experiencia que conecta con la naturaleza salvaje de la Patagonia chilena.</p>
+        <p class="section-subtitle">Nuestro salmón es más que un producto, es una experiencia que conecta con la naturaleza salvaje de la Patagonia chilena.</p>
         
         <div class="features-grid">
             <div class="feature-card">
@@ -72,42 +77,20 @@
 
     <!-- Products Section -->
     <section class="products" id="productos">
-        <h2 class="section-title">Nuestros Filetes Premium</h2>
-        <p class="section-subtitle">Descubre nuestra selección de salmón de Puerto Montt, capturado y procesado con el máximo cuidado para preservar su calidad excepcional.</p>
+        <h2 class="section-title">Nuestros Productos Premium</h2>
+        <p class="section-subtitle">Descubre nuestra selección de salmón de Puerto Montt, procesado con el máximo cuidado para preservar su calidad excepcional.</p>
         
-        <div class="products-grid">
-            <div class="product-card">
-                <div class="premium-badge">MÁS VENDIDO</div>
-                <div class="product-img" style="background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');"></div>
-                <div class="product-info">
-                    <h3 class="product-title">Filete Fresco Clásico</h3>
-                    <p>Filetes de salmón fresco, cortados a mano y listos para cocinar.</p>
-                    <div class="product-price">$14.990/kg</div>
-                    <a href="#" class="btn">Añadir al Carrito</a>
-                </div>
-            </div>
-            
-            <div class="product-card">
-                <div class="premium-badge">PREMIUM</div>
-                <div class="product-img" style="background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');"></div>
-                <div class="product-info">
-                    <h3 class="product-title">Filete Ahumado Artesanal</h3>
-                    <p>Salmón ahumado lentamente con maderas nativas de la Patagonia.</p>
-                    <div class="product-price">$22.990/kg</div>
-                    <a href="#" class="btn">Añadir al Carrito</a>
-                </div>
-            </div>
-            
-            <div class="product-card">
-                <div class="premium-badge">NUEVO</div>
-                <div class="product-img" style="background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1606859309941-6b8e241c342a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');"></div>
-                <div class="product-info">
-                    <h3 class="product-title">Filete con Especias Patagónicas</h3>
-                    <p>Filetes sazonados con hierbas exclusivas de la región andina.</p>
-                    <div class="product-price">$18.990/kg</div>
-                    <a href="#" class="btn">Añadir al Carrito</a>
-                </div>
-            </div>
+        <div class="filters">
+            <button class="filter-btn" onclick="filterProducts('filete_piel')">Filete con piel</button>
+            <button class="filter-btn" onclick="filterProducts('filete_sin_piel')">Filete sin piel</button>
+            <button class="filter-btn" onclick="filterProducts('porcion')">Porciones y B&P</button>
+            <button class="filter-btn" onclick="filterProducts('slice')">Slices</button>
+            <button class="filter-btn" onclick="filterProducts('ahumado')">Ahumado</button>
+            <button class="filter-btn" onclick="filterProducts('premium')">Premium</button>
+        </div>
+
+        <div class="products-grid" id="productsGrid">
+            <!-- Los productos se cargarán aquí -->
         </div>
     </section>
 
@@ -118,7 +101,7 @@
         
         <div class="testimonials-grid">
             <div class="testimonial-card">
-                <p class="testimonial-text">"El sabor del salmón Yemayá Ashabbá es incomparable. Se nota la calidad desde el primer bocado. ¡Mi familia solo quiere salmón de Puerto Montt ahora!"</p>
+                <p class="testimonial-text">"El sabor del salmón SalmoPrime es incomparable. Se nota la calidad desde el primer bocado. ¡Mi familia solo quiere salmón de Puerto Montt ahora!"</p>
                 <div class="testimonial-author">
                     <div class="author-img">M</div>
                     <div class="author-info">
@@ -129,7 +112,7 @@
             </div>
             
             <div class="testimonial-card">
-                <p class="testimonial-text">"Como distribuidor de productos premium, el salmón Yemayá Ashabbá es el más solicitado por mis clientes. Su textura y frescura son insuperables."</p>
+                <p class="testimonial-text">"Como distribuidor de productos premium, el salmón SalmoPrime es el más solicitado por mis clientes. Su textura y frescura son insuperables."</p>
                 <div class="testimonial-author">
                     <div class="author-img">C</div>
                     <div class="author-info">
@@ -159,16 +142,120 @@
         <a href="#productos" class="btn btn-premium">Comprar Ahora</a>
     </section>
 
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2><i class="fas fa-shopping-cart"></i> Mi Carrito</h2>
+            <button class="close-cart" onclick="toggleCart()">✕</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Los items del carrito se mostrarán aquí -->
+        </div>
+        <div class="cart-total">
+            <div class="total-amount" id="totalAmount">Total: $0</div>
+            <button class="checkout-btn" onclick="checkout()"><i class="fas fa-credit-card"></i> Finalizar Compra</button>
+        </div>
+    </div>
+
+    <!-- Formulario de Checkout -->
+    <div class="checkout-form" id="checkoutForm">
+        <div class="form-container">
+            <div class="form-header">
+                <h2><i class="fas fa-clipboard-check"></i> Completar Pedido</h2>
+                <button class="close-form" onclick="closeCheckout()">&times;</button>
+            </div>
+            
+            <div class="order-summary" id="orderSummary">
+                <h3>Resumen del Pedido</h3>
+                <div id="summaryItems"></div>
+                <div class="order-total" id="summaryTotal">Total: $0</div>
+            </div>
+
+            <form id="orderForm">
+                <div class="form-group">
+                    <label for="customerName"><i class="fas fa-user"></i> Nombre Completo *</label>
+                    <input type="text" id="customerName" name="customerName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="customerPhone"><i class="fas fa-phone"></i> Teléfono (WhatsApp) *</label>
+                    <input type="tel" id="customerPhone" name="customerPhone" required placeholder="+56 9 XXXX XXXX">
+                </div>
+
+                <div class="form-group">
+                    <label for="customerEmail"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="customerEmail" name="customerEmail" placeholder="ejemplo@correo.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="deliveryAddress"><i class="fas fa-map-marker-alt"></i> Dirección de Entrega *</label>
+                    <input type="text" id="deliveryAddress" name="deliveryAddress" required placeholder="Calle, número, comuna">
+                </div>
+
+                <div class="form-group">
+                    <label for="deliveryRegion"><i class="fas fa-city"></i> Ciudad / Región *</label>
+                    <input type="text" id="deliveryRegion" name="deliveryRegion" required placeholder="Santiago, Región Metropolitana">
+                </div>
+
+                <div class="form-group">
+                    <label for="paymentMethod"><i class="fas fa-credit-card"></i> Método de Pago *</label>
+                    <select id="paymentMethod" name="paymentMethod" required>
+                        <option value="">Seleccionar método de pago</option>
+                        <option value="transferencia">Transferencia Bancaria</option>
+                        <option value="tarjeta">Tarjeta de crédito/débito</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="deliveryNotes"><i class="fas fa-comment"></i> Comentarios Adicionales</label>
+                    <textarea id="deliveryNotes" name="deliveryNotes" rows="3" placeholder="Instrucciones especiales de entrega, horarios preferidos, etc."></textarea>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn-submit"><i class="fab fa-whatsapp"></i> Enviar Pedido por WhatsApp</button>
+                    <button type="button" class="btn-cancel" onclick="closeCheckout()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Panel de Administración -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-content">
+            <div class="admin-header">
+                <h2><i class="fas fa-cog"></i> Panel de Administración - Pedidos</h2>
+                <button class="close-form" onclick="closeAdmin()">&times;</button>
+            </div>
+            
+            <table class="orders-table" id="ordersTable">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Teléfono</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                    <!-- Los pedidos se cargarán aquí -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer>
         <div class="footer-content">
             <div class="footer-column">
-                <h3>Yemayá Ashabbá</h3>
+                <h3><img src="./Assets/img/SALMOPRIME-64X17.png" alt="SalmoPrime" style="height: 50px;"></h3>
                 <p>Ofreciendo el mejor salmón de Puerto Montt, Chile, desde 2010. Calidad, frescura y compromiso con nuestro entorno natural.</p>
+                <p><strong>Más de 5 años</strong> sirviendo a restaurantes, distribuidores y mayoristas en todo Chile.</p>
                 <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=100094639015873"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/salmoprime/"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@salmoprime?_t=ZM-8yZutRVq5kU&_r=1"><i class="fa-brands fa-tiktok"></i></a>
                     <a href="#"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
@@ -176,11 +263,11 @@
             <div class="footer-column">
                 <h3>Productos</h3>
                 <ul class="footer-links">
-                    <li><a href="#">Filete Fresco</a></li>
-                    <li><a href="#">Filete Ahumado</a></li>
-                    <li><a href="#">Filete con Especias</a></li>
-                    <li><a href="#">Productos Premium</a></li>
-                    <li><a href="#">Ofertas Especiales</a></li>
+                    <li><a href="#productos" onclick="filterProducts('ahumado')">Ahumado</a></li>
+                    <li><a href="#productos" onclick="filterProducts('filete')">Filetes</a></li>
+                    <li><a href="#productos" onclick="filterProducts('atlantico')">Atlántico</a></li>
+                    <li><a href="#productos" onclick="filterProducts('coho')">Coho</a></li>
+                    <li><a href="#productos" onclick="filterProducts('premium')">Productos Premium</a></li>
                 </ul>
             </div>
             
@@ -191,24 +278,30 @@
                     <li><a href="#nosotros">Sobre Nosotros</a></li>
                     <li><a href="#beneficios">Nuestro Proceso</a></li>
                     <li><a href="#">Sustentabilidad</a></li>
-                    <li><a href="#contacto">Contacto</a></li>
+                    <li><a href="https://wa.me/56952348988?text=Hola,%20quiero%20más%20información" target="_blank"> Contacto</a></i>
                 </ul>
             </div>
             
             <div class="footer-column">
                 <h3>Contacto</h3>
                 <ul class="footer-links">
-                    <li><i class="fas fa-map-marker-alt"></i> Puerto Montt, Región de Los Lagos, Chile</li>
-                    <li><i class="fas fa-phone"></i> +56 9 8765 4321</li>
-                    <li><i class="fas fa-envelope"></i> contacto@yemaya-ashabba.cl</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Puerto Montt | Chile</li>
+                    <li><a href="tel:+56952348988">
+                        <i class="fas fa-phone"></i> +56 9 9824 0636</a>
+                    </li>
+                    <li><i class="fas fa-envelope"></i> contacto@salmoprime.cl</li>
                     <li><i class="fas fa-clock"></i> Lunes-Viernes: 9:00 - 18:00</li>
                 </ul>
+                
             </div>
         </div>
         
         <div class="copyright">
-            <p>&copy; 2023 Yemayá Ashabbá. Todos los derechos reservados. Salmón de Puerto Montt, Chile.</p>
+            <p>&copy; 2025 Yemayá Ashabbá. Todos los derechos reservados. Salmón de Puerto Montt, Chile.</p>
+            <p>Desarrollado con 💙 para la industria salmonera chilena</p>
         </div>
     </footer>
+    <script src="./js/script.js"></script>
 </body>
 </html>
+                
