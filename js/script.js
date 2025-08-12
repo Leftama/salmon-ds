@@ -556,91 +556,87 @@
         function displayProducts() {
             const grid = document.getElementById('productsGrid');
             const filtered = currentFilter === 'all'
-            ? products
-            : products.filter(product => {
-                const name = product.name.toLowerCase();
+                ? products
+                : products.filter(product => {
+                    const name = product.name.toLowerCase();
+                    switch (currentFilter) {
+                        case 'filete_piel':
+                            return name.includes('filete') && name.includes('con piel');
+                        case 'filete_sin_piel':
+                            return name.includes('filete') && name.includes('sin piel');
+                        case 'porcion':
+                            return name.includes('porción') || name.includes('b&p');
+                        case 'slice':
+                            return name.includes('slice') || name.includes('slices');
+                        case 'ahumado':
+                            return product.category === 'ahumado';
+                        case 'premium':
+                            return product.quality === 'premium';
+                        default:
+                            return true;
+                    }
+                });
 
-                switch (currentFilter) {
-                    case 'filete_piel':
-                        return name.includes('filete') && name.includes('con piel');
-                    case 'filete_sin_piel':
-                        return name.includes('filete') && name.includes('sin piel');
-                    case 'porcion':
-                        return name.includes('porción') || name.includes('b&p');
-                    case 'slice':
-                        return name.includes('slice') || name.includes('slices');
-                    case 'ahumado':
-                        return product.category === 'ahumado';
-                    case 'premium':
-                        return product.quality === 'premium';
-                    default:
-                        return true;
-                }
+            const groups = {};
+            filtered.forEach(product => {
+                const key = `${product.name.split(/(\d|-|oz|lbs|sc)/i)[0].trim().toLowerCase()}|${product.image}`;
+                if (!groups[key]) groups[key] = [];
+                groups[key].push(product);
             });
 
-        const groups = {};
-        filtered.forEach(product => {
-            const key = `${product.name.split(/(\d|-|oz|lbs|sc)/i)[0].trim().toLowerCase()}|${product.price}|${product.image}`;
-            if (!groups[key]) groups[key] = [];
-            groups[key].push(product);
-        });
+            grid.innerHTML = Object.values(groups).map(group => {
+                const mainProduct = group[0];
+                const speciesLabel = mainProduct.species === 'atlantico' ? 'Salmón Atlántico' : 'Salmón Coho';
 
-        grid.innerHTML = Object.values(groups).map(group => {
-            const mainProduct = group[0];
-            const speciesLabel = mainProduct.species === 'atlantico' ? 'Salmón Atlántico' : 'Salmón Coho';
-
-            return `
-                <div class="product-card">
-                    ${mainProduct.quality === 'premium' ? '<div class="premium-badge">PREMIUM</div>' : ''}
-                    <div class="product-img">
-                        <img src="${mainProduct.image}" alt="${mainProduct.name}" loading="lazy">
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-title">${mainProduct.name.split(/(\d|-|oz|lbs|sc)/i)[0].trim()}</h3>
-                        <div class="product-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Especie:</span>
-                                <span class="species-tag">${speciesLabel}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Calidad:</span>
-                                <span class="quality-tag ${mainProduct.quality}">${mainProduct.quality.charAt(0).toUpperCase() + mainProduct.quality.slice(1)}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Calibre:</span>
-                                <select class="calibre-select" onchange="selectCalibre(this, ${group.map(p => p.id).join(',')})">
-                                    <option value="">Seleccionar calibre</option>
-                                    ${group.map(p => `<option value="${p.id}">${p.weight}</option>`).join('')}
-                                </select>
-                            </div>
+                return `
+                    <div class="product-card">
+                        ${mainProduct.quality === 'premium' ? '<div class="premium-badge">PREMIUM</div>' : ''}
+                        <div class="product-img">
+                            <img src="${mainProduct.image}" alt="${mainProduct.name}" loading="lazy">
                         </div>
-                        <div class="product-price">
-                            ${mainProduct.price.toLocaleString()} <span class="price-unit">/ caja</span>
+                        <div class="product-info">
+                            <h3 class="product-title">${mainProduct.name.split(/(\d|-|oz|lbs|sc)/i)[0].trim()}</h3>
+                            <div class="product-details">
+                                <div class="detail-row">
+                                    <span class="detail-label">Especie:</span>
+                                    <span class="species-tag">${speciesLabel}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Calidad:</span>
+                                    <span class="quality-tag ${mainProduct.quality}">${mainProduct.quality.charAt(0).toUpperCase() + mainProduct.quality.slice(1)}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Calibre:</span>
+                                    <select class="calibre-select" onchange="selectForQuote(this, ${group.map(p => p.id).join(',')})">
+                                        <option value="">Seleccionar calibre</option>
+                                        ${group.map(p => `<option value="${p.id}">${p.weight}</option>`).join('')}
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="quote-btn" onclick="sendWhatsAppQuote(${mainProduct.id})" disabled>
+                                <i class="fab fa-whatsapp"></i> Cotizar por WhatsApp
+                            </button>
                         </div>
-                        <button class="add-to-cart" onclick="addToCart(${mainProduct.id})">
-                            <i class="fas fa-cart-plus"></i> Agregar Caja
-                        </button>
                     </div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    function selectCalibre(selectElement, ...productIds) {
-        const selectedId = parseInt(selectElement.value);
-        const btn = selectElement.closest('.product-info').querySelector('.add-to-cart');
-
-        if (!selectedId) {
-            btn.onclick = null;
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Selecciona calibre';
-            return;
+                `;
+            }).join('');
         }
 
-        btn.disabled = false;
-        btn.onclick = () => addToCart(selectedId);
-        btn.innerHTML = '<i class="fas fa-cart-plus"></i> Agregar Caja';
-    }
+        function selectCalibre(selectElement, ...productIds) {
+            const selectedId = parseInt(selectElement.value);
+            const btn = selectElement.closest('.product-info').querySelector('.add-to-cart');
+
+            if (!selectedId) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Selecciona calibre';
+                return;
+            }
+
+            btn.disabled = false;
+            btn.onclick = () => addToCart(selectedId);
+            btn.innerHTML = '<i class="fas fa-cart-plus"></i> Seleccionar';
+        }
+
 
         // Filtrar productos
         function filterProducts(filter) {
@@ -654,69 +650,66 @@
             event.target.classList.add('active');
         }
 
-        // Agregar al carrito
-        function addToCart(productId) {
+        let selectedForQuote = [];
+
+// Cuando selecciona calibre, se guarda el producto en la lista temporal
+        function selectForQuote(selectElement, ...productIds) {
+            const selectedId = parseInt(selectElement.value);
+            const btn = selectElement.closest('.product-info').querySelector('.quote-btn');
+
+            if (!selectedId) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Selecciona calibre';
+                return;
+            }
+
+            btn.disabled = false;
+            btn.onclick = () => addToQuoteList(selectedId);
+            btn.innerHTML = '<i class="fas fa-plus"></i> Agregar a cotización';
+        }
+
+        function addToQuoteList(productId) {
             const product = products.find(p => p.id === productId);
-            const existingItem = cart.find(item => item.id === productId);
 
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({ ...product, quantity: 1 });
+            // Evitar duplicados
+            if (!selectedForQuote.some(item => item.id === productId)) {
+                selectedForQuote.push({
+                    id: product.id,
+                    name: product.name,
+                    weight: product.weight
+                });
             }
 
-            updateCart();
-            updateCartCount();
-            
-            // Animación de feedback
-            const btn = event.target;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-check"></i> ¡Agregado!';
-            btn.style.background = 'linear-gradient(45deg, var(--verde-premium), #2ecc71)';
-            
-            setTimeout(() => {
-                btn.innerHTML = originalText;
-                btn.style.background = 'linear-gradient(45deg, var(--azul-oceano), var(--menta-fresca))';
-            }, 1000);
+            updateQuoteButton();
         }
 
-        // Actualizar carrito
-        function updateCart() {
-            const cartItems = document.getElementById('cartItems');
+        function updateQuoteButton() {
+            const quotePanel = document.getElementById('quotePanel');
             
-            if (cart.length === 0) {
-                cartItems.innerHTML = `
-                    <div class="empty-cart">
-                        <i class="fas fa-shopping-cart"></i>
-                        <h3>Tu carrito está vacío</h3>
-                        <p>Agrega algunos productos para comenzar</p>
-                    </div>
+            if (selectedForQuote.length === 0) {
+                quotePanel.innerHTML = `<p>No hay productos seleccionados.</p>`;
+            } else {
+                quotePanel.innerHTML = `
+                    <ul>
+                        ${selectedForQuote.map(item => `<li>• ${item.name} - ${item.weight}</li>`).join('')}
+                    </ul>
+                    <button class="send-whatsapp" onclick="sendWhatsAppQuote()">
+                        <i class="fab fa-whatsapp"></i> Enviar cotización
+                    </button>
                 `;
-            } else {
-                cartItems.innerHTML = cart.map(item => `
-                    <div class="cart-item">
-                        <div class="cart-item-info">
-                            <div class="cart-item-title">${item.name}</div>
-                            <div class="cart-item-price">${item.price.toLocaleString()} / caja</div>
-                            <div class="quantity-controls">
-                                <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                                <span>Cantidad: ${item.quantity}</span>
-                                <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <button class="remove-item" onclick="removeFromCart(${item.id})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                `).join('');
             }
-
-            updateTotal();
         }
+
+        function sendWhatsAppQuote() {
+            const numeroWhatsApp = "56952348988"; // Cambia por tu número
+            const mensaje = encodeURIComponent(
+                "Hola, quiero cotizar los siguientes productos:\n" +
+                selectedForQuote.map(item => `• ${item.name} - Calibre: ${item.weight}`).join("\n")
+            );
+            window.open(`https://wa.me/${numeroWhatsApp}?text=${mensaje}`, "_blank");
+        }
+
+
 
         // Actualizar cantidad
         function updateQuantity(productId, change) {
